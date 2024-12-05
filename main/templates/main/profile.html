@@ -6,10 +6,12 @@
 
 {% block content %}
     <h2>Профиль пользователя {{ user.username }}</h2>
-{% if user.first_name and user.last_name %}
-    <p>Здравствуйте, {{ user.first_name }} {{ user.last_name }} </p>
-{% else %}
-    <p>Здравствуйте! </p>
-{% endif %}
-    <h3>Ваши объявления</h3>
+    {% if user.first_name and user.last_name %}
+        <p>Здравствуйте, {{ user.first_name }} {{ user.last_name }} </p>
+    {% else %}
+    <ul style="list-style-type: none;">
+        <li><a href="{% url 'main:create_request' %}">Создание заявки</a></li>
+        <li><a href="{% url 'main:view_requests' %}">Просмотр ваших заявок</a></li>
+    </ul>
+    {% endif %}
 {% endblock %}

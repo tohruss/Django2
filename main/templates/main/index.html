@@ -1,5 +1,20 @@
 {% extends "layout/basic.html" %}
 
+{% block title %} Главная {% endblock %}
+
 {% block content %}
-  <h2>Разрабы обнову не завезли)</h2>
+<h2>Последние заявки в статусе «Выполнено»</h2>
+<ul>
+    {% for request in completed_requests %}
+        <li>
+            <p>Временная метка: {{ request.timestamp }}</p>
+            <p>Название: {{ request.title }}</p>
+            <p>Категория заявки: {{ request.category }}</p>
+            {% if request.photo %}
+                <img src="{{ request.photo.url }}" alt="{{ request.title }}" style="max-width: 200px;">
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+<h2>Количество заявок в статусе «Принято в работу»: {{ in_progress_count }}</h2>
 {% endblock %}
