@@ -29,15 +29,15 @@
        </div>
    </div>
    {% else %}
-   <a class="p-2 text-dark" href="{% url 'main:register' %}">Регистрация</a>
-   <a class="p-2 text-dark" href="{% url 'main:login' %}">Вход</a>
+   <a class="p-2 text-dark" href="{% url 'main:register' %}" style="text-decoration: none; color: black;">Регистрация</a>
+   <a class="p-2 text-dark" href="{% url 'main:login' %}" style="text-decoration: none; color: black;">Вход</a>
    {% endif %}
 </div>
 
   <div class="row">
 
       <nav class="col-md-auto nav flex-column">
-          <a class="nav-link root" href="{% url 'main:index'  %}" >Главная</a>
+          <a class="nav-link root" href="{% url 'main:index'  %}" style="text-decoration: none; color: black;" >Главная</a>
       </nav>
 
       <div class="container">

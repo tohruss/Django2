@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, create_request, view_requests, delete_request
+from .views import index, create_request, view_requests, delete_request, check_username
 from .views import BBLoginView
 from .views import profile
 from .views import BBLogoutView
@@ -7,7 +7,7 @@ from .views import ChangeUserInfoView
 from .views import BBPasswordChangeView
 from .views import RegisterDoneView, RegisterUserView
 from .views import DeleteUserView
-
+from . import views
 app_name = 'main'
 
 urlpatterns = [
@@ -23,4 +23,5 @@ urlpatterns = [
    path('create/', create_request, name='create_request'),
    path('requests/', view_requests, name='view_requests'),
    path('delete/<int:request_id>/', delete_request, name='delete_request'),
+   path('check_username/', views.check_username, name='check_username'),
 ]

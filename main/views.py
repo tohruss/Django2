@@ -19,8 +19,10 @@ from django.views.generic import UpdateView, CreateView, TemplateView, DeleteVie
 
 from .forms import CreateRequestForm
 from .models import CreateRequest
-
-
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 
 def index(request):
     completed_requests = CreateRequest.objects.filter(status='completed').order_by('-timestamp')[:4]
@@ -136,3 +138,25 @@ def delete_request(request, request_id):
         return redirect('main:view_requests')
 
     return render(request, 'main/delete_request.html', {'request_obj': request_obj})
+
+
+
+@require_POST
+def check_username(request):
+    response_data = {}
+    username = request.POST.get("username")
+    user = None
+    try:
+        user = AdvUser.objects.get(username=username)
+    except ObjectDoesNotExist:
+        pass
+    except Exception as e:
+        raise e
+
+    if user:
+        response_data["exists"] = True
+        response_data["message"] = "Пользователь с таким логином уже существует."
+    else:
+        response_data["exists"] = False
+
+    return JsonResponse(response_data)

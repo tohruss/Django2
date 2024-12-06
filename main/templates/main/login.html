@@ -1,19 +1,35 @@
 {% extends "layout/basic.html" %}
 
 {% load bootstrap4 %}
+{% load static %}
 
 {% block title %} Вход {% endblock %}
 
 {% block content %}
-<h2>Вход</h2>
+<h2 style="font-size: 2rem; margin-bottom: 20px;">Вход</h2>
+
 {% if user.is_authenticated %}
 <p>Вы уже выполнили вход.</p>
 {% else %}
-<form method="post">
-   {% csrf_token %}
-   {% bootstrap_form form layout='horizontal' %}
-   <input type="hidden" name="next" value="{{ next }}">
-   {% buttons submit='Войти' %} {% endbuttons %}
+<form method="post" id="login-form" style="display: flex; max-width: 40vw; height: 60vh; flex-direction: column; padding: 30px 20px;">
+    {% csrf_token %}
+
+    <!-- Поля формы -->
+    <div class="form-group">
+        <label for="id_username" style="font-size: 1.25rem;">Логин:</label>
+        <input type="text" id="id_username" name="username" class="form-control" style="border: 2px solid #000; border-radius: 10px; height: 45px;">
+    </div>
+
+    <div class="form-group">
+        <label for="id_password" style="font-size: 1.25rem;">Пароль:</label>
+        <input type="password" id="id_password" name="password" class="form-control" style="border: 2px solid #000; border-radius: 10px; height: 45px;">
+    </div>
+
+    <input type="hidden" name="next" value="{{ next }}">
+    <input type="submit" value="Войти" style="background-color: black; color: white; padding: 20px; border: none; border-radius: 20px;">
 </form>
 {% endif %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/index.js' %}"></script>
 {% endblock %}

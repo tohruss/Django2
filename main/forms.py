@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from .models import user_registrated, AdvUser
 import re
 from .models import CreateRequest, Category
+
+
 class ChangeUserInfoForm(forms.ModelForm):
    email = forms.EmailField(required=True, label='Адрес электронной почты')
 
@@ -25,13 +27,6 @@ class RegisterUserForm(forms.ModelForm):
     fio = forms.CharField(label='ФИО', max_length=100)
     username = forms.CharField(label='Логин', max_length=30)
     consent = forms.BooleanField(label='Согласие на обработку персональных данных')
-
-    def clean_username(self):
-        username = self.cleaned_data['username']
-
-        if AdvUser.objects.filter(username=username).exists():
-            raise ValidationError( f'Этот логин "{username}" уже занят. Пожалуйста, придумайте другой.')
-        return username
 
     def clean_fio(self):
         fio = self.cleaned_data.get('fio')
