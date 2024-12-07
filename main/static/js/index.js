@@ -29,3 +29,33 @@ function check_username(element) {
         }
     });
 }
+
+function check_fio(element) {
+    $("#fio-error").hide();
+    $("#fio-error-cyrillic").hide();
+
+    var fio = $(element).val(); // Получаем значение из поля ввода
+    if (fio == "") {
+        return; // Если поле пустое, выходим из функции
+    }
+
+    var valid_characters = "^[А-яЁё -]{1,}$";
+    if (!new RegExp(valid_characters).test(fio)) {
+        $('#fio-error').show(); // Показываем сообщение об ошибке
+    } else {
+        $('#fio-error').hide(); // Скрываем сообщение об ошибке
+    }
+
+    var cyrillic_characters = "[А-яЁё]";
+    if (!new RegExp(cyrillic_characters).test(fio)) {
+        $('#fio-error-cyrillic').show(); // Показываем сообщение об ошибке
+    } else {
+        $('#fio-error-cyrillic').hide(); // Скрываем сообщение об ошибке
+    }
+}
+
+$(document).ready(function() {
+    $('#id_fio').on('input', function() {
+        check_fio(this);
+    });
+});

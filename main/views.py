@@ -100,15 +100,28 @@ class DeleteUserView(LoginRequiredMixin, DeleteView):
            queryset = self.get_queryset()
        return get_object_or_404(queryset, pk=self.user_id)
 
+@login_required
 def view_requests(request):
-    requests = CreateRequest.objects.all()
+    # Фильтруем заявки по текущему пользователю
+    requests = CreateRequest.objects.filter(user=request.user)
     return render(request, 'main/view_requests.html', {'requests': requests})
 
 @login_required
 def create_request(request):
+    # Проверка на количество заявок со статусом "Новая"
+    if CreateRequest.objects.filter(user=request.user, status='new').count() >= 3:
+        messages.error(request, 'Вы достигли лимита заявок со статусом "Новая". Пожалуйста, дождитесь, пока одна из ваших заявок не будет обработана.')
+        return render(request, 'main/create_request.html', {'form': None})
+
     if request.method == 'POST':
         form = CreateRequestForm(request.POST, request.FILES)
         if form.is_valid():
+            # Проверка на наличие заявки с той же категорией и статусом "Новая"
+            category = form.cleaned_data['category']
+            if CreateRequest.objects.filter(user=request.user, category=category, status='new').exists():
+                messages.error(request, 'У вас уже есть заявка с этой категорией со статусом "Новая".')
+                return redirect('main:create_request')
+
             request_obj = form.save(commit=False)
             request_obj.user = request.user
             request_obj.save()
@@ -119,6 +132,7 @@ def create_request(request):
 
 
 #метод для удаления заявки
+@login_required
 def delete_request(request, request_id):
     request_obj = get_object_or_404(CreateRequest, id=request_id)
 

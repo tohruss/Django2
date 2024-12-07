@@ -5,20 +5,20 @@
 {% block title %} Заявки {% endblock %}
 
 {% block content %}
-<h2>Список заявок</h2>
-<ul class="request-list">
+<h2 style="margin-bottom: 30px">Список заявок</h2>
+<a href="{% url 'main:create_request' %}" style="background-color: black; color: white; padding: 20px; border: none; border-radius: 20px;">Создать новую заявку</a>
+<ul class="request-list" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; list-style-type: none; padding: 0;">
     {% for request in requests %}
-        <li class="request-item">
+        <li class="request-item" style="max-width: 400px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 7px; margin-top: 30px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" >
             <strong>{{ request.title }}</strong> - {{ request.status }}
             <p>{{ request.description }}</p>
-            <p>Категория: {{ request.category }}</p>
+            <p><strong>Категория:</strong> {{ request.category }}</p>
             {% if request.photo %}
-                <img src="{{ request.photo.url }}" alt="{{ request.title }}" style="max-width: 400px; max-height: 400px">
+                <img src="{{ request.photo.url }}" alt="{{ request.title }}" style="max-width: 300px; max-height: 400px; border-radius: 7px; margin-bottom: 10px;">
             {% endif %}
-            <p>Дата создания: {{ request.timestamp }}</p>
-            <a href="{% url 'main:delete_request' request.id %}">Удалить заявку</a>
+            <p><strong>Дата создания:</strong>  {{ request.timestamp }}</p>
+            <a href="{% url 'main:delete_request' request.id %}" style="background-color: black; color: white; padding: 10px; border: none; border-radius: 10px;">Удалить заявку</a>
         </li>
     {% endfor %}
 </ul>
-<a href="{% url 'main:create_request' %}">Создать новую заявку</a>
 {% endblock %}

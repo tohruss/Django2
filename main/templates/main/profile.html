@@ -9,9 +9,9 @@
     {% if user.first_name and user.last_name %}
         <p>Здравствуйте, {{ user.first_name }} {{ user.last_name }} </p>
     {% else %}
-    <ul style="list-style-type: none;">
-        <li><a href="{% url 'main:create_request' %}">Создание заявки</a></li>
-        <li><a href="{% url 'main:view_requests' %}">Просмотр ваших заявок</a></li>
-    </ul>
+    <div style="display: flex; flex-direction: column;">
+        <a href="{% url 'main:create_request' %}" style="text-decoration: none; color: black; padding-bottom: 10px;">Создание заявки</a>
+        <a href="{% url 'main:view_requests' %}" style="text-decoration: none; color: black;" >Просмотр ваших заявок</a>
+    </div>
     {% endif %}
 {% endblock %}

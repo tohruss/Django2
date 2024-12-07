@@ -22,6 +22,8 @@
     <div class="form-group">
         <label for="id_fio" style="font-size: 1.25rem;">ФИО:</label>
         <input type="text" id="id_fio" name="fio" class="form-control" style="border: 2px solid #000; border-radius: 10px; height: 45px;">
+        <div id="fio-error" style="color: red; display: none;">ФИО может содержать только кириллические буквы, пробелы и дефисы.</div>
+        <div id="fio-error-cyrillic" style="color: red; display: none;">ФИО должно содержать хотя бы одну кириллическую букву.</div>
     </div>
 
     <div class="form-group">
@@ -44,7 +46,7 @@
         <label for="id_consent" class="form-check-label">Согласие на обработку персональных данных</label>
     </div>
 
-    <input type="submit" value="Зарегистрироваться" style="background-color: black; color: white; padding: 20px; border: none; border-radius: 20px;">
+    <input type="submit" value="Зарегистрироваться" style="style="background-color: black; color: white; padding: 20px; border: none; border-radius: 20px;"">
 </form>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
