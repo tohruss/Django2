@@ -16,7 +16,6 @@
             <p><strong>Описание:</strong>{{ request.description }}</p>
             <p><strong>Категория:</strong> {{ request.category }}</p>
             {% if request.photo %}
-                <div class="design-text" style="display: none; ">Готовый дизайн</div>
                 <img src="{{ request.photo.url }}" alt="{{ request.title }}" style="max-width: 300px; max-height: 400px; border-radius: 7px; margin-bottom: 10px;" class="request-photo" data-design-image="{% if request.design_image %}{{ request.design_image.url }}{% endif %}">
             {% endif %}
             <p><strong>Дата создания:</strong>  {{ request.timestamp }}</p>
@@ -26,19 +25,8 @@
             {% if request.design_image %}
                 <img src="{{ request.design_image.url }}" alt="{{ request.title }}" style="max-width: 300px; max-height: 400px; border-radius: 7px; margin-bottom: 10px; display: none;" class="design-image">
             {% endif %}
-            {% if user.is_staff and request.status not in 'in_progress,completed' %}
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <input type="hidden" name="request_id" value="{{ request.id }}">
-                    {{ form.status }}
-                    <div id="design_image_{{ request.id }}" style="display: none;">
-                        <p><strong>Готовый дизайн, фото:</strong> {{ form.design_image }}</p>
-                    </div>
-                    <div id="comment_{{ request.id }}" style="display: none;">
-                        <p><strong>Коментарий дизайнера:</strong>  {{ form.comment }}</p>
-                    </div>
-                    <button type="submit">Изменить статус</button>
-                </form>
+            {% if user.is_staff and request.status != 'completed' %}
+                <a href="{% url 'main:change_status' request.id %}" style="background-color: black; color: white; padding: 10px; border: none; border-radius: 10px;">Редактировать заявку</a>
             {% endif %}
             {% if not user.is_staff %}
                 <a href="{% url 'main:delete_request' request.id %}" style="background-color: black; color: white; padding: 10px; border: none; border-radius: 10px;">Удалить заявку</a>

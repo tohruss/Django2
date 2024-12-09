@@ -60,27 +60,33 @@ $(document).ready(function() {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const statusSelects = document.querySelectorAll('select[name="status"]');
-
-    statusSelects.forEach(function(select) {
-        select.addEventListener('change', function() {
-            const requestId = this.closest('form').querySelector('input[name="request_id"]').value;
-            const designImageField = document.getElementById(`design_image_${requestId}`);
-            const commentField = document.getElementById(`comment_${requestId}`);
-
-            if (this.value === 'completed') {
-                designImageField.style.display = 'block';
-                commentField.style.display = 'none';
-            } else if (this.value === 'in_progress') {
-                designImageField.style.display = 'none';
-                commentField.style.display = 'block';
-            } else {
-                designImageField.style.display = 'none';
-                commentField.style.display = 'none';
-            }
-        });
+$(document).ready(function() {
+    $('select[name="status"]').change(function() {
+        var selectedStatus = $(this).val();
+        if (selectedStatus === 'in_progress') {
+            $('#comment_field').show();
+            $('#design_image_field').hide();
+        } else if (selectedStatus === 'completed') {
+            $('#comment_field').hide();
+            $('#design_image_field').show();
+        } else {
+            $('#comment_field').hide();
+            $('#design_image_field').hide();
+        }
     });
+
+    // Инициализация отображения полей в зависимости от текущего статуса
+    var currentStatus = $('select[name="status"]').val();
+    if (currentStatus === 'in_progress') {
+        $('#comment_field').show();
+        $('#design_image_field').hide();
+    } else if (currentStatus === 'completed') {
+        $('#comment_field').hide();
+        $('#design_image_field').show();
+    } else {
+        $('#comment_field').hide();
+        $('#design_image_field').hide();
+    }
 });
 
 $(document).ready(function() {
@@ -102,3 +108,4 @@ $(document).ready(function() {
         $(this).data('original-image', $(this).attr('src'));
     });
 });
+

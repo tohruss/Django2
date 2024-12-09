@@ -190,18 +190,19 @@ def check_username(request):
     return JsonResponse(response_data)
 
 @user_passes_test(lambda u: u.is_staff)
+@login_required
 def change_status(request, request_id):
     request_obj = get_object_or_404(CreateRequest, id=request_id)
 
-    if request_obj.status in ['in_progress', 'completed']:
-        messages.error(request, 'Смена статуса с "Принято в работу" или "Выполнено" невозможна.')
+    if request_obj.status == 'completed':
+        messages.error(request, 'Редактирование заявки с статусом "Выполнено" невозможно.')
         return redirect('main:view_requests')
 
     if request.method == 'POST':
         form = ChangeStatusForm(request.POST, request.FILES, instance=request_obj)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Статус заявки успешно изменен.')
+            messages.success(request, 'Заявка успешно отредактирована.')
             return redirect('main:view_requests')
     else:
         form = ChangeStatusForm(instance=request_obj)

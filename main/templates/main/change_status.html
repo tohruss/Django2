@@ -1,12 +1,31 @@
 {% extends "layout/basic.html" %}
 
 {% load bootstrap4 %}
+{% load static %}
 
 {% block content %}
-  <h2>Смена статуса заявки</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Изменить статус</button>
-  </form>
+  <h2 style="text-align: center; margin-bottom: 20px;">Смена статуса заявки</h2>
+  <div style="display: flex; justify-content: center;">
+    <div style="max-width: 400px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 7px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="margin-bottom: 20px;">
+          {{ form.status.label_tag }}
+          {{ form.status }}
+        </div>
+        <div id="comment_field" style="display: none; margin-bottom: 20px;">
+          <p style="font-weight: bold;">Комментарий дизайнера:</p>
+          {{ form.comment }}
+        </div>
+        <div id="design_image_field" style="display: none; margin-bottom: 20px;">
+          <p style="font-weight: bold;">Готовый дизайн, фото:</p>
+          {{ form.design_image }}
+        </div>
+        <button type="submit" style="width: 100%; padding: 10px; background-color: black; color: white; border: none; border-radius: 5px; cursor: pointer;">Изменить статус</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="{% static 'js/index.js' %}"></script>
 {% endblock %}
