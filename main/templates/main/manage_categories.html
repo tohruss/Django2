@@ -1,0 +1,21 @@
+{% extends "layout/basic.html" %}
+
+{% block title %} Управление категориями {% endblock %}
+
+{% block content %}
+<h2>Управление категориями</h2>
+<ul>
+    {% for category in categories %}
+        <li>
+            {{ category.name }}
+            <a href="{% url 'main:delete_category' category.id %}" style="color: red;">Удалить</a>
+        </li>
+    {% endfor %}
+</ul>
+<h3>Добавить новую категорию</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Добавить</button>
+</form>
+{% endblock %}

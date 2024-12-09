@@ -1,9 +1,11 @@
+from urllib.request import Request
+
 from django.http import HttpResponse, Http404
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
 from django.contrib import messages
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -11,8 +13,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 
 
-from .forms import ChangeUserInfoForm
-from .models import AdvUser
+from .forms import ChangeUserInfoForm, ChangeStatusForm, CategoryForm
+from .models import AdvUser, Category
 from django.contrib.auth.views import PasswordChangeView
 from .forms import RegisterUserForm
 from django.views.generic import UpdateView, CreateView, TemplateView, DeleteView
@@ -21,7 +23,6 @@ from .forms import CreateRequestForm
 from .models import CreateRequest
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 
 def index(request):
@@ -102,9 +103,22 @@ class DeleteUserView(LoginRequiredMixin, DeleteView):
 
 @login_required
 def view_requests(request):
-    # Фильтруем заявки по текущему пользователю
-    requests = CreateRequest.objects.filter(user=request.user)
-    return render(request, 'main/view_requests.html', {'requests': requests})
+    if request.user.is_staff:
+        requests = CreateRequest.objects.all()
+    else:
+        requests = CreateRequest.objects.filter(user=request.user)
+
+    if request.method == 'POST':
+        request_id = request.POST.get('request_id')
+        request_obj = get_object_or_404(CreateRequest, id=request_id)
+        form = ChangeStatusForm(request.POST, request.FILES, instance=request_obj)
+        if form.is_valid():
+            form.save()
+            return redirect('main:view_requests')
+    else:
+        form = ChangeStatusForm()
+
+    return render(request, 'main/view_requests.html', {'requests': requests, 'form': form})
 
 @login_required
 def create_request(request):
@@ -174,3 +188,58 @@ def check_username(request):
         response_data["exists"] = False
 
     return JsonResponse(response_data)
+
+@user_passes_test(lambda u: u.is_staff)
+def change_status(request, request_id):
+    request_obj = get_object_or_404(CreateRequest, id=request_id)
+
+    if request_obj.status in ['in_progress', 'completed']:
+        messages.error(request, 'Смена статуса с "Принято в работу" или "Выполнено" невозможна.')
+        return redirect('main:view_requests')
+
+    if request.method == 'POST':
+        form = ChangeStatusForm(request.POST, request.FILES, instance=request_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Статус заявки успешно изменен.')
+            return redirect('main:view_requests')
+    else:
+        form = ChangeStatusForm(instance=request_obj)
+
+    return render(request, 'main/change_status.html', {'form': form, 'request_obj': request_obj})
+
+
+
+
+@login_required
+def manage_categories(request):
+    if not request.user.is_staff:
+        return redirect('main:index')
+
+    categories = Category.objects.all()
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Категория успешно добавлена.')
+            return redirect('main:manage_categories')
+    else:
+        form = CategoryForm()
+
+    return render(request, 'main/manage_categories.html', {'categories': categories, 'form': form})
+
+@login_required
+def delete_category(request, category_id):
+    if not request.user.is_staff:
+        return redirect('main:index')
+
+    category = get_object_or_404(Category, id=category_id)
+    CreateRequest.objects.filter(category=category).delete()  # Правильное использование менеджера объектов
+    category.delete()
+    messages.success(request, 'Категория и все связанные заявки успешно удалены.')
+    return redirect('main:manage_categories')
+
+def request_list(request):
+    categories = Category.objects.all()
+    requests = Request.objects.filter(category__in=categories)
+    return render(request, 'main/request_list.html', {'requests': requests})

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, create_request, view_requests, delete_request, check_username
+from .views import index, create_request, view_requests, delete_request, check_username, change_status
 from .views import BBLoginView
 from .views import profile
 from .views import BBLogoutView
@@ -24,4 +24,8 @@ urlpatterns = [
    path('requests/', view_requests, name='view_requests'),
    path('delete/<int:request_id>/', delete_request, name='delete_request'),
    path('check_username/', views.check_username, name='check_username'),
+   path('requests/change_status/<int:request_id>/', change_status, name='change_status'),
+   path('manage_categories/', views.manage_categories, name='manage_categories'),
+   path('delete_category/<int:category_id>/', views.delete_category, name='delete_category'),
+
 ]

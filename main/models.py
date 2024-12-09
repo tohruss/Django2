@@ -15,7 +15,7 @@ class AdvUser(AbstractUser):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Категория')
+    name = models.CharField(max_length=100, verbose_name='Категория', unique=True)
 
     def __str__(self):
         return self.name
@@ -33,6 +33,7 @@ class CreateRequest(models.Model):
     photo = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name='Фото помещения', blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Временная метка')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new', verbose_name='Статус')
-
+    design_image = models.ImageField(upload_to='designs/%Y/%m/%d/', verbose_name='Изображение дизайна', blank=True,null=True)
+    comment = models.TextField(verbose_name='Комментарий', blank=True, null=True)
     def __str__(self):
         return self.title

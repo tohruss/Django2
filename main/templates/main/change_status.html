@@ -1,0 +1,12 @@
+{% extends "layout/basic.html" %}
+
+{% load bootstrap4 %}
+
+{% block content %}
+  <h2>Смена статуса заявки</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Изменить статус</button>
+  </form>
+{% endblock %}

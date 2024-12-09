@@ -95,3 +95,33 @@ class CreateRequestForm(forms.ModelForm):
             if photo.image.format.lower() not in ['jpeg', 'jpg', 'png', 'bmp']:
                 raise ValidationError('Неподдерживаемый формат файла. Допустимые форматы: JPG, JPEG, PNG, BMP.')
         return photo
+
+class ChangeStatusForm(forms.ModelForm):
+    class Meta:
+        model = CreateRequest
+        fields = ['status', 'design_image', 'comment']
+
+    def __init__(self, *args, **kwargs):
+        super(ChangeStatusForm, self).__init__(*args, **kwargs)
+        # Ограничиваем выбор статусов только для "Выполнено" и "Принято в работу"
+        self.fields['status'].choices = [
+            ('completed', 'Выполнено'),
+            ('in_progress', 'Принято в работу'),
+        ]
+        # Делаем поле design_image обязательным только для статуса "Выполнено"
+        if self.instance.status == 'completed':
+            self.fields['design_image'].required = True
+        else:
+            self.fields['design_image'].required = False
+        # Делаем поле comment обязательным только для статуса "Принято в работу"
+        if self.instance.status == 'in_progress':
+            self.fields['comment'].required = True
+        else:
+            self.fields['comment'].required = False
+
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']

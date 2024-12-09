@@ -8,10 +8,17 @@
     <h2>Профиль пользователя {{ user.username }}</h2>
     {% if user.first_name and user.last_name %}
         <p>Здравствуйте, {{ user.first_name }} {{ user.last_name }} </p>
+    {% endif %}
+
+    {% if user.is_staff %}
+        <div style="display: flex; flex-direction: column;">
+            <a href="{% url 'main:view_requests' %}" style="text-decoration: none; color: black;">Просмотр всех заявок</a>
+            <a href="{% url 'main:manage_categories' %}" style="text-decoration: none; color: black;">Управление категорями заявок</a>
+        </div>
     {% else %}
-    <div style="display: flex; flex-direction: column;">
-        <a href="{% url 'main:create_request' %}" style="text-decoration: none; color: black; padding-bottom: 10px;">Создание заявки</a>
-        <a href="{% url 'main:view_requests' %}" style="text-decoration: none; color: black;" >Просмотр ваших заявок</a>
-    </div>
+        <div style="display: flex; flex-direction: column;">
+            <a href="{% url 'main:create_request' %}" style="text-decoration: none; color: black; padding-bottom: 10px;">Создание заявки</a>
+            <a href="{% url 'main:view_requests' %}" style="text-decoration: none; color: black;">Просмотр ваших заявок</a>
+        </div>
     {% endif %}
 {% endblock %}

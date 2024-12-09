@@ -59,3 +59,26 @@ $(document).ready(function() {
         check_fio(this);
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelects = document.querySelectorAll('select[name="status"]');
+
+    statusSelects.forEach(function(select) {
+        select.addEventListener('change', function() {
+            const requestId = this.closest('form').querySelector('input[name="request_id"]').value;
+            const designImageField = document.getElementById(`design_image_${requestId}`);
+            const commentField = document.getElementById(`comment_${requestId}`);
+
+            if (this.value === 'completed') {
+                designImageField.style.display = 'block';
+                commentField.style.display = 'none';
+            } else if (this.value === 'in_progress') {
+                designImageField.style.display = 'none';
+                commentField.style.display = 'block';
+            } else {
+                designImageField.style.display = 'none';
+                commentField.style.display = 'none';
+            }
+        });
+    });
+});
