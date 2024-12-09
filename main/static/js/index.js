@@ -82,3 +82,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+$(document).ready(function() {
+    $('.request-photo').hover(function() {
+        var designImageUrl = $(this).data('design-image');
+        if (designImageUrl) {
+            $(this).attr('src', designImageUrl);
+            $(this).siblings('.design-text').show();
+        }
+    }, function() {
+        var originalImageUrl = $(this).data('original-image');
+        if (originalImageUrl) {
+            $(this).attr('src', originalImageUrl);
+            $(this).siblings('.design-text').hide();
+        }
+    });
+
+    $('.request-photo').each(function() {
+        $(this).data('original-image', $(this).attr('src'));
+    });
+});

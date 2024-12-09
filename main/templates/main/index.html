@@ -2,6 +2,8 @@
 
 {% block title %} Главная {% endblock %}
 
+{% load static %}
+
 {% block content %}
 <h2>Количество заявок в статусе «Принято в работу»: {{ in_progress_count }}</h2>
 <h2>Последние заявки в статусе «Выполнено»</h2>
@@ -12,13 +14,18 @@
             <p><strong>Название:</strong> {{ request.title }}</p>
             <p><strong>Категория заявки:</strong> {{ request.category }}</p>
             {% if request.photo %}
-                <img src="{{ request.photo.url }}" alt="{{ request.title }}" style="max-width: 300px; max-height: 400px; border-radius: 7px; margin-bottom: 10px;">
+                <div class="request-photo-container">
+                    <div class="design-text" style="display: none; ">Готовый дизайн</div>
+                    <img src="{{ request.photo.url }}" alt="{{ request.title }}" style="max-width: 300px; max-height: 400px; border-radius: 7px; margin-bottom: 10px;" class="request-photo" data-design-image="{% if request.design_image %}{{ request.design_image.url }}{% endif %}">
+                </div>
             {% endif %}
             {% if request.design_image %}
-                <p><strong>Готовый дизайн:</strong></p>
-                <img src="{{ request.design_image.url }}" alt="{{ request.title }}" style="max-width: 300px; max-height: 400px; border-radius: 7px; margin-bottom: 10px;">
+                <img src="{{ request.design_image.url }}" alt="{{ request.title }}" style="max-width: 300px; max-height: 400px; border-radius: 7px; margin-bottom: 10px; display: none;" class="design-image">
             {% endif %}
         </li>
     {% endfor %}
 </ul>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/index.js' %}"></script>
 {% endblock %}

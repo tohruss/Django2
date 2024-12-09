@@ -1,28 +1,30 @@
 {% extends "layout/basic.html" %}
 
-{% load bootstrap4 %}
-{% load static %}
-
 {% block title %} Заявки {% endblock %}
+
+{% load static %}
 
 {% block content %}
 <h2 style="margin-bottom: 30px">Список заявок</h2>
-<a href="{% url 'main:create_request' %}" style="background-color: black; color: white; padding: 20px; border: none; border-radius: 20px;">Создать новую заявку</a>
+{% if not user.is_staff %}
+    <a href="{% url 'main:create_request' %}" style="background-color: black; color: white; padding: 20px; border: none; border-radius: 20px;">Создать новую заявку</a>
+{% endif %}
 <ul class="request-list" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; list-style-type: none; padding: 0;">
     {% for request in requests %}
         <li class="request-item" style="max-width: 400px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 7px; margin-top: 30px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" >
-            <strong>{{ request.title }}</strong> - {{ request.status }}
+            <strong>{{ request.title }}</strong> - {{ request.get_status_display }}
             <p><strong>Описание:</strong>{{ request.description }}</p>
             <p><strong>Категория:</strong> {{ request.category }}</p>
             {% if request.photo %}
-                <img src="{{ request.photo.url }}" alt="{{ request.title }}" style="max-width: 300px; max-height: 400px; border-radius: 7px; margin-bottom: 10px;">
+                <div class="design-text" style="display: none; ">Готовый дизайн</div>
+                <img src="{{ request.photo.url }}" alt="{{ request.title }}" style="max-width: 300px; max-height: 400px; border-radius: 7px; margin-bottom: 10px;" class="request-photo" data-design-image="{% if request.design_image %}{{ request.design_image.url }}{% endif %}">
             {% endif %}
             <p><strong>Дата создания:</strong>  {{ request.timestamp }}</p>
             {% if request.comment %}
                 <p>Комментарий: {{ request.comment }}</p>
             {% endif %}
             {% if request.design_image %}
-                <img src="{{ request.design_image.url }}" alt="{{ request.title }}" style="max-width: 300px; max-height: 400px; border-radius: 7px; margin-bottom: 10px;">
+                <img src="{{ request.design_image.url }}" alt="{{ request.title }}" style="max-width: 300px; max-height: 400px; border-radius: 7px; margin-bottom: 10px; display: none;" class="design-image">
             {% endif %}
             {% if user.is_staff and request.status not in 'in_progress,completed' %}
                 <form method="post" enctype="multipart/form-data">
@@ -38,10 +40,13 @@
                     <button type="submit">Изменить статус</button>
                 </form>
             {% endif %}
-            <a href="{% url 'main:delete_request' request.id %}" style="background-color: black; color: white; padding: 10px; border: none; border-radius: 10px;">Удалить заявку</a>
+            {% if not user.is_staff %}
+                <a href="{% url 'main:delete_request' request.id %}" style="background-color: black; color: white; padding: 10px; border: none; border-radius: 10px;">Удалить заявку</a>
+            {% endif %}
         </li>
     {% endfor %}
 </ul>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{% static 'js/index.js' %}"></script>
 {% endblock %}
